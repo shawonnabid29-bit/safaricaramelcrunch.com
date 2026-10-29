@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="bn" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari Caramel Crunch Bar</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons (Pure Iconic Elements - No Emoji Text) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Fonts Integration -->
+    <style>
+        /* Import SolaimanLipi Font */
+        @import url('https://fonts.googleapis.com/css2?family=SolaimanLipi&display=swap');
+
+        /* Custom Font Setup with High Priority Loaded Font-face */
+        @font-face {
+            font-family: 'BDCricket';
+            src: url('https://raw.githubusercontent.com/shawonnabid29-bit/Mobile-phone/main/%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE%E0%A6%A8%E0%A6%A6%E0%A7%87%E0%A6%B6%20%E0%A6%95%E0%A7%8D%E0%A6%B0%E0%A6%BF%E0%A6%95%E0%A7%87%E0%A6%9F.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: block;
+        }
+        @font-face {
+            font-family: 'SylhetFont';
+            src: url('https://raw.githubusercontent.com/shawonnabid29-bit/Mobile-phone/main/%E0%A6%B8%E0%A6%BF%E0%A6%B2%E0%A7%87%E0%A6%9F.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: block;
+        }
+
+        /* Enforce custom fonts globally across all text elements */
+        *:not(i):not(svg):not(path) {
+            font-family: 'BDCricket', 'SylhetFont', sans-serif !important;
+        }
+
+        /* Dedicated SolaimanLipi Font for Order Form and Confirm Order Button */
+        #order-section, 
+        #order-section *, 
+        .solaiman-font, 
+        #submit-btn, 
+        #submit-btn * {
+            font-family: 'SolaimanLipi', 'Kalpurush', 'Hind Siliguri', sans-serif !important;
+        }
+
+        /* Swing animation for Buttons */
+        @keyframes swing {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(6deg); }
+            40% { transform: rotate(-6deg); }
+            60% { transform: rotate(4deg); }
+            80% { transform: rotate(-4deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .btn-swing {
+            animation: swing 2.5s infinite ease-in-out;
+            transform-origin: top center;
+        }
+
+        /* Continuous swinging effect specifically for the Order Confirm button */
+        .btn-swing-continuous {
+            animation: swing 2s infinite ease-in-out !important;
+            transform-origin: center center;
+        }
+
+        /* 360 Spin class for buttons */
+        .rotate-360 {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .rotate-360:hover, .rotate-active {
+            transform: rotate(360deg);
+        }
+
+        /* Text Transition Animations */
+        .slide-from-left {
+            animation: slideLeft 0.5s forwards ease-out;
+        }
+        .slide-from-right {
+            animation: slideRight 0.5s forwards ease-out;
+        }
+
+        @keyframes slideLeft {
+            0% { opacity: 0; transform: translateX(-40px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideRight {
+            0% { opacity: 0; transform: translateX(40px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Flower Rain Canvas */
+        #flower-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        /* Review Marquee Track */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            width: 100%;
+        }
+        .marquee-content {
+            display: inline-flex;
+            animation: marquee 28s linear infinite;
+        }
+        .marquee-container:hover .marquee-content {
+            animation-play-state: paused;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Custom Styled Location Radio Option Cards */
+        .location-card {
+            transition: all 0.3s ease;
+        }
+        .location-card.selected {
+            border-color: #f97316;
+            background-color: rgba(249, 115, 22, 0.08);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
+        }
+        .location-card .check-icon {
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s ease;
+        }
+        .location-card.selected .check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Smooth Dark mode transitions */
+        body {
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+    </style>
+</head>
+<body class="bg-orange-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Flower Rain Animation Canvas -->
+    <canvas id="flower-canvas"></canvas>
+
+    <!-- Main Navigation Bar -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md border-b border-orange-200 dark:border-gray-700 transition-colors sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 py-2.5 flex justify-between items-center">
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3">
+                <img src="https://raw.githubusercontent.com/shawonnabid29-bit/Mobile-phone/main/Pixellab_ST_%E0%A7%A8%E0%A7%A8%E0%A7%A6%E0%A7%A7%E0%A7%A6%E0%A7%A8%E0%A7%AF_%E0%A7%A8%E0%A7%A3%E0%A7%A0%E0%A7%A3%E0%A7%AB%E0%A7%AC.png" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/180x50/f97316/ffffff?text=Safari+Chocolate';" 
+                     alt="Safari Logo" 
+                     class="h-12 md:h-14 w-auto object-contain hover:scale-105 transition-transform duration-300">
+            </div>
+
+            <!-- Controls in Nav: Language & Dark Mode Toggle -->
+            <div class="flex items-center space-x-2 md:space-x-3">
+                <!-- Language Switcher -->
+                <div class="flex items-center space-x-1 bg-orange-100 dark:bg-gray-700 p-1 rounded-full border border-orange-300 dark:border-gray-600">
+                    <button id="lang-en-btn" onclick="setLanguage('en')" class="px-3 py-1 rounded-full text-xs font-bold transition-all rotate-360 flex items-center gap-1.5 text-gray-700 dark:text-gray-200">
+                        <i class="fa-solid fa-earth-americas text-orange-600 dark:text-orange-400"></i> English
+                    </button>
+                    <button id="lang-bn-btn" onclick="setLanguage('bn')" class="px-3 py-1 rounded-full text-xs font-bold bg-orange-600 text-white shadow transition-all rotate-360 flex items-center gap-1.5">
+                        <i class="fa-solid fa-language text-white"></i> বাংলা
+                    </button>
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-full bg-orange-100 dark:bg-gray-700 border border-orange-300 dark:border-gray-600 text-orange-600 dark:text-yellow-300 rotate-360 hover:scale-110 transition-all flex items-center justify-center w-10 h-10 shadow-sm" title="Toggle Theme">
+                    <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full space-y-12" id="content-container">
+
+        <!-- Hero & Product Showcase Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl border border-orange-100 dark:border-gray-700">
+            <!-- Product Image Gallery -->
+            <div class="space-y-4">
+                <div class="relative group overflow-hidden rounded-xl bg-orange-100/60 dark:bg-gray-700/60 p-4 border-2 border-orange-200 dark:border-gray-600">
+                    <img id="main-product-img" 
+                         src="https://nazijdates.com/cdn/shop/files/SafariCaramelCrunchBar_2.png?v=1782077534" 
+                         alt="Safari Caramel Crunch Bar" 
+                         class="w-full h-80 object-contain mx-auto transform group-hover:scale-105 transition-transform duration-500">
+                    <span class="absolute top-3 left-3 bg-gradient-to-r from-red-600 to-orange-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-yellow-300"></i> <span data-key="special_offer">বিশেষ অফার</span>
+                    </span>
+                </div>
+                
+                <!-- Image Thumbnails -->
+                <div class="grid grid-cols-4 gap-2.5">
+                    <img src="https://nazijdates.com/cdn/shop/files/SafariCaramelCrunchBar_2.png?v=1782077534" 
+                         onclick="changeImage(this.src)" 
+                         class="h-20 w-full object-cover rounded-lg cursor-pointer border-2 border-orange-500 hover:opacity-80 transition shadow-sm">
+                    <img src="https://nazijdates.com/cdn/shop/files/SafariCaramelCrunchBar_4.png?v=1782077534" 
+                         onclick="changeImage(this.src)" 
+                         class="h-20 w-full object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-orange-500 hover:opacity-80 transition shadow-sm">
+                    <img src="https://nazijdates.com/cdn/shop/files/SafariCaramelCrunchBar_1.png?v=1782077533" 
+                         onclick="changeImage(this.src)" 
+                         class="h-20 w-full object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-orange-500 hover:opacity-80 transition shadow-sm">
+                    <img src="https://5.imimg.com/data5/ANDROID/Default/2026/5/608003042/YZ/LF/II/10144194/product.jpg" 
+                         onclick="changeImage(this.src)" 
+                         class="h-20 w-full object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-orange-500 hover:opacity-80 transition shadow-sm">
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="space-y-6">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-100 dark:bg-gray-700 text-orange-600 dark:text-orange-400 text-xs font-bold rounded-full mb-2">
+                        <i class="fa-solid fa-award"></i> <span data-key="premium_tag">প্রিমিয়াম মানের চকলেট</span>
+                    </span>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-orange-600 dark:text-orange-400 mb-2">
+                        Safari Caramel Crunch
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed" data-key="product_desc">
+                        স্বাদ ও মুচমুচে স্বাদের এক অপূর্ব মেলবন্ধন! আসল ক্যারেমেল ও দারুণ চকলেট বার যা আপনার প্রতি মুহূর্তকে মিষ্টি ও আনন্দময় করে তুলবে।
+                    </p>
+                </div>
+
+                <!-- Price Box -->
+                <div class="flex items-center space-x-4 bg-orange-100/80 dark:bg-gray-700/80 p-4 rounded-xl border-l-4 border-orange-500 shadow-sm">
+                    <span class="text-gray-500 dark:text-gray-400 line-through text-lg" data-key="old_price">৳ ৫০</span>
+                    <span class="text-3xl font-black text-orange-600 dark:text-orange-400" data-key="current_price">৳ ৪০</span>
+                    <span class="bg-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow" data-key="discount">২০% ছাড়</span>
+                </div>
+
+                <!-- Features list -->
+                <ul class="space-y-2.5 text-sm text-gray-700 dark:text-gray-300">
+                    <li class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-circle-check text-green-500 text-base"></i>
+                        <span data-key="feat_1">১০০% অরিজিনাল সাফারি চকলেট</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-circle-check text-green-500 text-base"></i>
+                        <span data-key="feat_2">প্রিমিয়াম ক্যারেমেল ও ক্রাঞ্চি টেক্সচার</span>
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-circle-check text-green-500 text-base"></i>
+                        <span data-key="feat_3">দ্রুত ক্যাশ অন ডেলিভারি সুবিধা</span>
+                    </li>
+                </ul>
+
+                <!-- Order Swing Button -->
+                <div class="pt-4 text-center">
+                    <a href="#order-section" class="btn-swing inline-flex items-center justify-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xl rounded-full shadow-2xl transition duration-300 transform hover:scale-105 border-2 border-green-400">
+                        <i class="fa-solid fa-cart-shopping"></i> <span data-key="order_now">অর্ডার করুন</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shipping Policy Banner -->
+        <section class="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-6 md:p-8 rounded-2xl shadow-lg border border-orange-400">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center text-3xl text-white flex-shrink-0 shadow-inner">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <div class="space-y-2 text-center md:text-left">
+                    <h3 class="text-xl font-bold border-b border-orange-300/50 pb-1 inline-flex items-center gap-2" data-key="shipping_title">
+                        <i class="fa-solid fa-shield-halved"></i> শিপিং এবং ডেলিভারি নীতি
+                    </h3>
+                    <p class="text-sm text-orange-50 leading-relaxed" data-key="shipping_text">
+                        আমরা আমাদের গ্রাহকদের কাছে সঠিক পণ্য দ্রুত, সহজীকরণ এবং পাসওয়ার্ড দিতে প্রতিশ্রুতিবদ্ধ। এই শিপিং এবং ডেলিভারি নীতি-এ আমাদের ডেলিভারি কভারেজ, অর্ডার প্রক্রিয়াকরণ, আনুমানিক ডেলিভারি সময়, শিপিং চার্জ এবং ডেলিভারি-সম্পর্কিত শর্তাদি সম্পর্কে বিস্তারিত জানানো হয়েছে। আমাদের ওয়েবসাইট দুটি আগে অনুগ্রহ করে এই নীতিটি পড়ে নিন। (আনুমানিক সময়: ৪ থেকে ৫ দিন)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews Marquee Section -->
+        <section class="space-y-4">
+            <div class="text-center space-y-1">
+                <h3 class="text-2xl font-extrabold text-orange-600 dark:text-orange-400 flex items-center justify-center gap-2" data-key="reviews_title">
+                    <i class="fa-solid fa-comments text-orange-500"></i> গ্রাহকদের মন্তব্য ও রেটিং
+                </h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400" data-key="reviews_sub">
+                    কার্ডগুলো স্পর্শ করলে থেমে যাবে, সোয়াইপ করুন
+                </p>
+            </div>
+
+            <!-- Continuous Infinite Marquee -->
+            <div class="marquee-container py-2">
+                <div class="marquee-content space-x-4" id="review-track">
+                    <!-- Dynamic review items inserted by Javascript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Form Section (2026 Glassmorphism & Modern UI Design) -->
+        <section id="order-section" class="relative overflow-hidden bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl p-6 md:p-10 rounded-3xl shadow-2xl border border-orange-300 dark:border-gray-700 transition-all">
+            <!-- Decorative Gradient Glow Elements -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-orange-400/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-amber-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-xl mx-auto space-y-6 relative z-10">
+                <div class="text-center space-y-2">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 text-xs font-black rounded-full uppercase tracking-wider border border-orange-300">
+                        <i class="fa-solid fa-shield-check"></i> Fast Checkout 2026
+                    </span>
+                    <h2 class="text-3xl font-extrabold text-orange-600 dark:text-orange-400 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-box-open"></i> <span data-key="form_title">অর্ডার ফর্ম পূরণ করুন</span>
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400" data-key="form_sub">সঠিক তথ্য দিয়ে অর্ডার সম্পন্ন করুন</p>
+                </div>
+
+                <form id="telegram-order-form" onsubmit="handleOrderSubmit(event)" class="space-y-5">
+                    <!-- Quantity Selector -->
+                    <div class="bg-orange-50/70 dark:bg-gray-700/50 p-4 rounded-2xl border border-orange-200 dark:border-gray-600 flex justify-between items-center shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-cubes text-orange-500 text-lg"></i>
+                            <div>
+                                <p class="font-bold text-sm text-gray-800 dark:text-gray-100">পরিমাণ (Pack Quantity)</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">প্রতি প্যাক ৳৪০</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-orange-300 dark:border-gray-600 shadow-sm">
+                            <button type="button" onclick="updateQty(-1)" class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-gray-700 text-orange-600 font-bold hover:bg-orange-200 transition flex items-center justify-center">-</button>
+                            <span id="order-qty" class="font-extrabold text-lg w-6 text-center">1</span>
+                            <button type="button" onclick="updateQty(1)" class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-gray-700 text-orange-600 font-bold hover:bg-orange-200 transition flex items-center justify-center">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Customer Name -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5" data-key="label_name">
+                            আপনার নাম *
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-4 top-3.5 text-orange-500"></i>
+                            <input type="text" id="cust-name" required placeholder="আপনার পূর্ণ নাম লিখুন" 
+                                   class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-700/50 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all shadow-sm">
+                        </div>
+                    </div>
+
+                    <!-- Customer Phone -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5" data-key="label_phone">
+                            মোবাইল নম্বর *
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-phone absolute left-4 top-3.5 text-orange-500"></i>
+                            <input type="tel" id="cust-phone" pattern="[0-9]{11}" required placeholder="০১৭XXXXXXXX" 
+                                   class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-700/50 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all shadow-sm">
+                        </div>
+                    </div>
+
+                    <!-- Customer Address -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5" data-key="label_address">
+                            পূর্ণ ঠিকানা *
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-location-dot absolute left-4 top-3.5 text-orange-500"></i>
+                            <textarea id="cust-address" required rows="2" placeholder="জেলা, থানা, এলাকা ও বাসা নম্বর লিখুন" 
+                                      class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-700/50 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all shadow-sm"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Area Selector Options with Stylish Checkmark -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" data-key="label_delivery_area">
+                            ডেলিভারি এলাকা নির্বাচন করুন *
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Inside Dhaka Option -->
+                            <div id="card-inside-dhaka" onclick="selectDeliveryArea('inside', 60)" 
+                                 class="location-card selected cursor-pointer p-3.5 rounded-2xl border-2 border-orange-500 bg-orange-500/10 flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center text-sm shadow">
+                                        <i class="fa-solid fa-city"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-sm text-gray-800 dark:text-gray-100" data-key="inside_dhaka_title">ঢাকার মধ্যে</p>
+                                        <p class="text-xs text-orange-600 dark:text-orange-400 font-bold">ডেলিভারি চার্জ ৳৬০</p>
+                                    </div>
+                                </div>
+                                <div class="check-icon text-orange-600 text-lg">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                            </div>
+
+                            <!-- Outside Dhaka Option -->
+                            <div id="card-outside-dhaka" onclick="selectDeliveryArea('outside', 120)" 
+                                 class="location-card cursor-pointer p-3.5 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/40 flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-gray-400 dark:bg-gray-600 text-white flex items-center justify-center text-sm shadow">
+                                        <i class="fa-solid fa-map-location-dot"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-sm text-gray-800 dark:text-gray-100" data-key="outside_dhaka_title">ঢাকা জেলার বাইরে</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-bold">ডেলিভারি চার্জ ৳১২০</p>
+                                    </div>
+                                </div>
+                                <div class="check-icon text-orange-600 text-lg">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary Card -->
+                    <div class="bg-gradient-to-br from-orange-100/80 to-amber-100/80 dark:from-gray-700/80 dark:to-gray-800/80 p-5 rounded-2xl space-y-2.5 text-sm border border-orange-200 dark:border-gray-600 shadow-inner">
+                        <div class="flex justify-between">
+                            <span data-key="item_price">পণ্যের দাম:</span>
+                            <span class="font-bold" id="calculated-item-price">৳ ৪০</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span data-key="delivery_fee">ডেলিভারি চার্জ:</span>
+                            <span class="font-bold text-orange-600 dark:text-orange-400" id="calculated-shipping">৳ ৬০</span>
+                        </div>
+                        <hr class="border-orange-300 dark:border-gray-600">
+                        <div class="flex justify-between text-base font-extrabold text-orange-600 dark:text-orange-400">
+                            <span data-key="total_price">সর্বমোট:</span>
+                            <span id="calculated-total">৳ ১০০</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button with Continuous Swinging Motion and SolaimanLipi Font -->
+                    <button type="submit" id="submit-btn" class="btn-swing-continuous w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-extrabold text-xl rounded-xl shadow-2xl transition-all duration-300 flex items-center justify-center gap-2 border-2 border-green-400 transform active:scale-95">
+                        <i class="fa-solid fa-paper-plane"></i> <span data-key="confirm_order">অর্ডার নিশ্চিত করুন</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-900 text-gray-400 py-6 text-center text-sm border-t border-gray-800 mt-12">
+        <div class="flex justify-center items-center gap-2 mb-1 text-orange-500">
+            <i class="fa-solid fa-heart"></i>
+            <span class="font-bold text-white">Safari Caramel Crunch</span>
+        </div>
+        <p>&copy; 2026 Safari Caramel Crunch. All rights reserved.</p>
+    </footer>
+
+    <!-- Floating WhatsApp Popup Button -->
+    <div id="whatsapp-popup" class="fixed bottom-6 right-6 z-40 transition-transform hover:scale-110">
+        <a href="https://wa.me/8801894338281?text=Hello,%20I%20want%20to%20know%20more%20about%20Safari%20Caramel%20Crunch" target="_blank" 
+           class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-full shadow-2xl border-2 border-white">
+            <i class="fa-brands fa-whatsapp text-2xl"></i>
+            <span class="font-bold text-xs hidden sm:inline" data-key="wa_chat">কথা বলুন</span>
+        </a>
+    </div>
+
+    <!-- Confirmation Modal Step 1 (Order Confirmation Details) -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 max-w-md w-full rounded-2xl p-6 text-center space-y-4 shadow-2xl border-2 border-green-500 transform transition-all">
+            <!-- Big Success Checkmark with Audio Badge -->
+            <div class="relative w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                <i class="fa-solid fa-circle-check"></i>
+                <span class="absolute -top-1 -right-1 bg-orange-500 text-white p-1.5 rounded-full text-xs shadow" title="Audio Confirmation Playing">
+                    <i class="fa-solid fa-volume-high"></i>
+                </span>
+            </div>
+
+            <div class="space-y-1">
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white" data-key="modal_success">
+                    অর্ডার সফল হয়েছে!
+                </h3>
+                <p class="text-xs text-green-600 dark:text-green-400 font-bold uppercase tracking-wide">Thank You! Your order is confirmed</p>
+            </div>
+
+            <!-- Details Container -->
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-xl text-left space-y-2 text-sm text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600">
+                <p><strong data-key="modal_order_no">অর্ডার ট্র্যাকিং নম্বর:</strong> <span id="modal-order-id" class="text-orange-600 font-bold">#1029</span></p>
+                <p><strong data-key="modal_est_time">আনুমানিক ডেলিভারি:</strong> <span id="modal-delivery-date" class="font-semibold">২ থেকে ৩ দিন পর</span></p>
+                <p><strong data-key="modal_status">অবস্থা:</strong> <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold" data-key="modal_status_text">প্রসেসিং হচ্ছে</span></p>
+            </div>
+
+            <button onclick="showExitPromptModal()" class="w-full py-3 bg-green-600 text-white font-bold rounded-xl shadow hover:bg-green-700 transition flex items-center justify-center gap-2">
+                <span data-key="btn_continue">পরবর্তী</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Exit / Stay Modal Step 2 -->
+    <div id="exit-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 max-w-sm w-full rounded-2xl p-6 text-center space-y-5 shadow-2xl border border-orange-500">
+            <div class="text-4xl text-orange-500">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h4 class="text-lg font-bold text-gray-800 dark:text-white" data-key="exit_question">
+                আপনি কি ওয়েবসাইট থেকে বের হয়ে যেতে চান নাকি আরও অর্ডার করবেন?
+            </h4>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="leaveWebsite()" class="flex-1 py-2.5 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition text-sm flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span data-key="exit_btn">বের হয়ে যান</span>
+                </button>
+                <button onclick="resetAndStay()" class="flex-1 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition text-sm flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-cart-plus"></i> <span data-key="stay_btn">আরও অর্ডার করুন</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic & Animations -->
+    <script>
+        // Quantity & Delivery State
+        let currentQty = 1;
+        const unitPrice = 40;
+        let shippingCharge = 60; // Default Inside Dhaka
+        let deliveryAreaName = "ঢাকার মধ্যে";
+
+        function updateQty(change) {
+            currentQty = Math.max(1, currentQty + change);
+            document.getElementById('order-qty').innerText = currentQty;
+            recalculateTotal();
+        }
+
+        // Location Selection Handler
+        function selectDeliveryArea(type, charge) {
+            shippingCharge = charge;
+            const insideCard = document.getElementById('card-inside-dhaka');
+            const outsideCard = document.getElementById('card-outside-dhaka');
+
+            if (type === 'inside') {
+                deliveryAreaName = "ঢাকার মধ্যে";
+                insideCard.classList.add('selected');
+                outsideCard.classList.remove('selected');
+            } else {
+                deliveryAreaName = "ঢাকা জেলার বাইরে";
+                outsideCard.classList.add('selected');
+                insideCard.classList.remove('selected');
+            }
+
+            document.getElementById('calculated-shipping').innerText = `৳ ${shippingCharge}`;
+            recalculateTotal();
+        }
+
+        function recalculateTotal() {
+            const itemTotal = currentQty * unitPrice;
+            const grandTotal = itemTotal + shippingCharge;
+            document.getElementById('calculated-item-price').innerText = `৳ ${itemTotal}`;
+            document.getElementById('calculated-total').innerText = `৳ ${grandTotal}`;
+        }
+
+        // Voice Message Audio Function (English Audio Confirmation)
+        function playThankYouVoice() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop any ongoing speech
+                const speech = new SpeechSynthesisUtterance('Thank you, your order is confirmed!');
+                speech.lang = 'en-US';
+                speech.pitch = 1;
+                speech.rate = 0.95;
+                window.speechSynthesis.speak(speech);
+            }
+        }
+
+        // Language Translation Dictionaries
+        const translations = {
+            bn: {
+                premium_tag: "প্রিমিয়াম মানের চকলেট",
+                special_offer: "বিশেষ অফার",
+                product_desc: "স্বাদ ও মুচমুচে স্বাদের এক অপূর্ব মেলবন্ধন! আসল ক্যারেমেল ও দারুণ চকলেট বার যা আপনার প্রতি মুহূর্তকে মিষ্টি ও আনন্দময় করে তুলবে।",
+                old_price: "৳ ৫০",
+                current_price: "৳ ৪০",
+                discount: "২০% ছাড়",
+                feat_1: "১০০% অরিজিনাল সাফারি চকলেট",
+                feat_2: "প্রিমিয়াম ক্যারেমেল ও ক্রাঞ্চি টেক্সচার",
+                feat_3: "দ্রুত ক্যাশ অন ডেলিভারি সুবিধা",
+                order_now: "অর্ডার করুন",
+                shipping_title: "শিপিং এবং ডেলিভারি নীতি",
+                shipping_text: "আমরা আমাদের গ্রাহকদের কাছে সঠিক পণ্য দ্রুত, সহজীকরণ এবং পাসওয়ার্ড দিতে প্রতিশ্রুতিবদ্ধ। এই শিপিং এবং ডেলিভারি নীতি-এ আমাদের ডেলিভারি কভারেজ, অর্ডার প্রক্রিয়াকরণ, আনুমানিক ডেলিভারি সময়, শিপিং চার্জ এবং ডেলিভারি-সম্পর্কিত শর্তাদি সম্পর্কে বিস্তারিত জানানো হয়েছে। আমাদের ওয়েবসাইট দুটি আগে অনুগ্রহ করে এই নীতিটি পড়ে নিন। (আনুমানিক সময়: ৪ থেকে ৫ দিন)",
+                reviews_title: "গ্রাহকদের মন্তব্য ও রেটিং",
+                reviews_sub: "কার্ডগুলো স্পর্শ করলে থেমে যাবে, সোয়াইপ করুন",
+                form_title: "অর্ডার ফর্ম পূরণ করুন",
+                form_sub: "সঠিক তথ্য দিয়ে অর্ডার সম্পন্ন করুন",
+                label_name: "আপনার নাম *",
+                label_phone: "মোবাইল নম্বর *",
+                label_address: "পূর্ণ ঠিকানা *",
+                label_delivery_area: "ডেলিভারি এলাকা নির্বাচন করুন *",
+                inside_dhaka_title: "ঢাকার মধ্যে",
+                outside_dhaka_title: "ঢাকা জেলার বাইরে",
+                item_price: "পণ্যের দাম:",
+                delivery_fee: "ডেলিভারি চার্জ:",
+                total_price: "সর্বমোট:",
+                confirm_order: "অর্ডার নিশ্চিত করুন",
+                wa_chat: "কথা বলুন",
+                modal_success: "অর্ডার সফল হয়েছে!",
+                modal_order_no: "অর্ডার নম্বর:",
+                modal_est_time: "আনুমানিক ডেলিভারি:",
+                modal_status: "অবস্থা:",
+                modal_status_text: "প্রসেসিং হচ্ছে",
+                btn_continue: "পরবর্তী",
+                exit_question: "আপনি কি ওয়েবসাইট থেকে বের হয়ে যেতে চান নাকি আরও অর্ডার করবেন?",
+                exit_btn: "বের হয়ে যান",
+                stay_btn: "আরও অর্ডার করুন"
+            },
+            en: {
+                premium_tag: "Premium Quality Chocolate",
+                special_offer: "Special Offer",
+                product_desc: "A perfect blend of taste and crunchy texture! Original caramel chocolate bar to make your moments sweet and delightful.",
+                old_price: "৳ 50",
+                current_price: "৳ 40",
+                discount: "20% OFF",
+                feat_1: "100% Original Safari Chocolate",
+                feat_2: "Premium Caramel & Crunchy Texture",
+                feat_3: "Fast Cash on Delivery Available",
+                order_now: "Order Now",
+                shipping_title: "Shipping & Delivery Policy",
+                shipping_text: "We are committed to delivering genuine products safely and quickly. This policy covers our shipping methods, processing times, and estimated delivery dates. Please review before ordering. (Estimated delivery time: 4 to 5 days).",
+                reviews_title: "Customer Reviews & Ratings",
+                reviews_sub: "Touch cards to pause marquee, swipe manually",
+                form_title: "Fill Order Form",
+                form_sub: "Provide accurate details to complete order",
+                label_name: "Your Name *",
+                label_phone: "Mobile Number *",
+                label_address: "Full Address *",
+                label_delivery_area: "Select Delivery Area *",
+                inside_dhaka_title: "Inside Dhaka",
+                outside_dhaka_title: "Outside Dhaka",
+                item_price: "Item Price:",
+                delivery_fee: "Delivery Fee:",
+                total_price: "Total Amount:",
+                confirm_order: "Confirm Order",
+                wa_chat: "Chat with us",
+                modal_success: "Order Placed Successfully!",
+                modal_order_no: "Order Tracking No:",
+                modal_est_time: "Est. Delivery:",
+                modal_status: "Status:",
+                modal_status_text: "Processing",
+                btn_continue: "Continue",
+                exit_question: "Would you like to exit the site or place another order?",
+                exit_btn: "Exit Website",
+                stay_btn: "Order More"
+            }
+        };
+
+        // Reviews Dataset
+        const reviewsData = [
+            { name: "রাইমা", text: "চকলেটটা সত্যি অনেক চমৎকার! সাফারির ক্যারেমেল ফ্লেভার বেস্ট।", rating: 5 },
+            { name: "রিদিশা", text: "খুব দ্রুত ডেলিভারি পেয়েছি। দাম হিসেবে কোয়ালিটি অনেক ভালো।", rating: 5 },
+            { name: "তাকিয়া", text: "মুচমুচে ক্যারেমেল ক্রাঞ্চটা দারুন লেগেছে!", rating: 4 },
+            { name: "আলমগীর", text: "প্যাকেজিং খুব সুন্দর ছিল, বাচ্চারা খুব পছন্দ করেছে।", rating: 5 },
+            { name: "মরিয়ম", text: "৪০ টাকায় এত টেস্ট চকোলেট আশা করিনি!", rating: 5 },
+            { name: "সুমাইয়া", text: "অর্ডার দেওয়ার ৩ দিনের মধ্যে পেয়ে গেছি। থ্যাংক ইউ!", rating: 5 },
+            { name: "পারভেজ", text: "একদম অরিজিনাল প্রোডাক্ট। বারবার অর্ডার করতে মন চায়।", rating: 4 },
+            { name: "আলভী", text: "ক্যাশ অন ডেলিভারিতে পেয়ে অনেক সুবিধা হয়েছে।", rating: 5 },
+            { name: "সাকিব", text: "টেস্ট এক কথায় অসাধারণ। ১০/১০!", rating: 5 },
+            { name: "সিয়াম", text: "খুবই ফ্রেশ চকলেট। আবার অর্ডার করবো।", rating: 4 },
+            { name: "জিহাদ", text: "সার্ভিস ও চকলেটের মান উভয়ই টপ ক্লাস।", rating: 5 }
+        ];
+
+        let currentLang = 'bn';
+
+        // Initialize Page
+        window.onload = function() {
+            renderReviews();
+            initFlowerCanvas();
+        };
+
+        // Render Reviews into Marquee Track with Star Icons
+        function renderReviews() {
+            const track = document.getElementById('review-track');
+            const doubleList = [...reviewsData, ...reviewsData]; // Duplicate for seamless infinite loop
+            
+            track.innerHTML = doubleList.map(item => `
+                <div class="inline-block w-72 bg-orange-50 dark:bg-gray-700 p-4 rounded-xl border border-orange-200 dark:border-gray-600 shadow-sm flex-shrink-0">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-gray-800 dark:text-white text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-circle text-orange-500 text-base"></i> ${item.name}
+                        </span>
+                        <div class="text-amber-400 text-xs flex gap-0.5">
+                            ${Array(item.rating).fill('<i class="fa-solid fa-star"></i>').join('')}
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-300 whitespace-normal leading-relaxed">${item.text}</p>
+                </div>
+            `).join('');
+        }
+
+        // Image Change Function
+        function changeImage(src) {
+            document.getElementById('main-product-img').src = src;
+        }
+
+        // Toggle Dark Mode
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-sun text-lg';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-moon text-lg text-yellow-300';
+            }
+        }
+
+        // Switch Language with Animation Direction
+        function setLanguage(lang) {
+            if (currentLang === lang) return;
+            
+            const container = document.getElementById('content-container');
+            const bnBtn = document.getElementById('lang-bn-btn');
+            const enBtn = document.getElementById('lang-en-btn');
+
+            // Apply Animation direction
+            container.classList.remove('slide-from-left', 'slide-from-right');
+            void container.offsetWidth; // Trigger reflow
+            
+            if (lang === 'bn') {
+                container.classList.add('slide-from-left');
+                bnBtn.className = 'px-3 py-1 rounded-full text-xs font-bold bg-orange-600 text-white shadow transition-all rotate-360 flex items-center gap-1.5';
+                enBtn.className = 'px-3 py-1 rounded-full text-xs font-bold transition-all rotate-360 flex items-center gap-1.5 text-gray-700 dark:text-gray-200';
+                document.documentElement.lang = 'bn';
+            } else {
+                container.classList.add('slide-from-right');
+                enBtn.className = 'px-3 py-1 rounded-full text-xs font-bold bg-orange-600 text-white shadow transition-all rotate-360 flex items-center gap-1.5';
+                bnBtn.className = 'px-3 py-1 rounded-full text-xs font-bold transition-all rotate-360 flex items-center gap-1.5 text-gray-700 dark:text-gray-200';
+                document.documentElement.lang = 'en';
+            }
+
+            currentLang = lang;
+
+            // Update Text Contents
+            document.querySelectorAll('[data-key]').forEach(elem => {
+                const key = elem.getAttribute('data-key');
+                if (translations[lang][key]) {
+                    elem.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        // Handle Telegram API Order Submission
+        async function handleOrderSubmit(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const address = document.getElementById('cust-address').value;
+            const submitBtn = document.getElementById('submit-btn');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> প্রসেসিং...`;
+
+            // Telegram API Config
+            const botToken = '8772740480:AAHrMH7WAFsybb-DVQBcHRXp45W6gYeMRLg';
+            const chatId = '8981682252';
+
+            const itemTotal = currentQty * unitPrice;
+            const grandTotal = itemTotal + shippingCharge;
+
+            const message = `🛍️ *নতুন অর্ডার এসেছে!* 🛍️\n\n` +
+                            `👤 *গ্রাহকের নাম:* ${name}\n` +
+                            `📞 *মোবাইল:* ${phone}\n` +
+                            `🏠 *ঠিকানা:* ${address}\n` +
+                            `📍 *ডেলিভারি এলাকা:* ${deliveryAreaName}\n\n` +
+                            `🍫 *পণ্য:* Safari Caramel Crunch Bar\n` +
+                            `📦 *পরিমাণ:* ${currentQty} প্যাক\n` +
+                            `💰 *পণ্যের দাম:* ৳${itemTotal}\n` +
+                            `🚚 *ডেলিভারি চার্জ:* ৳${shippingCharge}\n` +
+                            `💵 *সর্বমোট:* ৳${grandTotal}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                // Play Audio Confirmation Speech
+                playThankYouVoice();
+
+                // Trigger Flower Rain Animation
+                startFlowerRain();
+
+                // Show Confirmation Modal
+                const orderNo = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('modal-order-id').innerText = '#' + orderNo;
+                document.getElementById('confirm-modal').classList.remove('hidden');
+
+            } catch (err) {
+                alert('অর্ডার সাবমিট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span data-key="confirm_order">${translations[currentLang].confirm_order}</span>`;
+            }
+        }
+
+        // Show Exit / Stay Prompt
+        function showExitPromptModal() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            document.getElementById('exit-modal').classList.remove('hidden');
+        }
+
+        function leaveWebsite() {
+            window.location.href = "https://www.google.com";
+        }
+
+        function resetAndStay() {
+            document.getElementById('exit-modal').classList.add('hidden');
+            document.getElementById('telegram-order-form').reset();
+            selectDeliveryArea('inside', 60);
+            stopFlowerRain();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- Flower Rain Canvas Effect ---
+        let canvas, ctx, animationId;
+        let flowers = [];
+
+        function initFlowerCanvas() {
+            canvas = document.getElementById('flower-canvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        function resizeCanvas() {
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        }
+
+        class Flower {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -100;
+                this.size = Math.random() * 8 + 6;
+                this.speedY = Math.random() * 3 + 2;
+                this.speedX = Math.random() * 2 - 1;
+                this.color = ['#f97316', '#fbbf24', '#f43f5e', '#a855f7', '#22c55e'][Math.floor(Math.random() * 5)];
+                this.rotation = Math.random() * 360;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += 2;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.fillStyle = this.color;
+                
+                // Draw 5 petal flower shape
+                for (let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    ctx.rotate((72 * Math.PI) / 180);
+                    ctx.arc(0, this.size / 2, this.size / 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.beginPath();
+                ctx.fillStyle = '#ffffff';
+                ctx.arc(0, 0, this.size / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function startFlowerRain() {
+            canvas.style.display = 'block';
+            flowers = Array.from({ length: 70 }, () => new Flower());
+            animateFlowers();
+            setTimeout(stopFlowerRain, 6000);
+        }
+
+        function animateFlowers() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            flowers.forEach((f) => {
+                f.update();
+                f.draw();
+            });
+            animationId = requestAnimationFrame(animateFlowers);
+        }
+
+        function stopFlowerRain() {
+            if (animationId) cancelAnimationFrame(animationId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
